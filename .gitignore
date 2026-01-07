@@ -1,6 +1,6 @@
 # Binaries
-matrixbot
-matrixbot-go
+./matrixbot
+./matrixbot-go
 
 # Environment variables
 .env

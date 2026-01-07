@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+type Option func(*Client)
+
 type Client struct {
 	Homeserver  string
 	AccessToken string
@@ -25,15 +27,31 @@ type Client struct {
 	seen       map[string]struct{}
 }
 
-func NewClient(homeserver, token, roomID, humanID string) *Client {
-	return &Client{
-		Homeserver:  homeserver,
-		AccessToken: token,
-		RoomID:      roomID,
-		HumanUserID: humanID,
-		httpClient:  &http.Client{Timeout: 45 * time.Second},
-		seen:        make(map[string]struct{}),
+func NewClient(opts ...Option) *Client {
+	c := &Client{
+		httpClient: &http.Client{Timeout: 45 * time.Second},
+		seen:       make(map[string]struct{}),
 	}
+	for _, opt := range opts {
+		opt(c)
+	}
+	return c
+}
+
+func WithHomeserver(url string) Option {
+	return func(c *Client) { c.Homeserver = url }
+}
+
+func WithAccessToken(token string) Option {
+	return func(c *Client) { c.AccessToken = token }
+}
+
+func WithRoomID(id string) Option {
+	return func(c *Client) { c.RoomID = id }
+}
+
+func WithHumanUserID(id string) Option {
+	return func(c *Client) { c.HumanUserID = id }
 }
 
 func (c *Client) apiRequest(ctx context.Context, method, path string, body any) (*http.Response, error) {
