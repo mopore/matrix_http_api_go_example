@@ -1,0 +1,15 @@
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+*.log
+*.tmp
+dist/
+bin/
+build/
+node_modules/
+.idea/
+.vscode/
+matrixbot
+matrixbot-go
+
